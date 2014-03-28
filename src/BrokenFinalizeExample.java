@@ -4,7 +4,9 @@
  * compiled the work method.
  *
  * <p>Using the <code>-Xcomp -XX:+TieredCompilation</code>
- * options should be enough to trigger this on OpenJDK reliably.</p>
+ * options should be enough to trigger this on OpenJDK reliably. Alternatively you can disable
+ * tiered compilation and set -XX:CompileThreshold=1, at which point the second run will
+ * fail.</p>
  *
  * <p>Upon failure, the example will print <code>Finalize</code> before work has completed.
  * The reason for the failure is that the JLS has very weak pre-finalization to finalization
@@ -38,5 +40,4 @@ public final class BrokenFinalizeExample {
             System.gc();
         }
     }
-
 }

@@ -1,3 +1,4 @@
+import java.io.FileInputStream;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 /**
@@ -8,9 +9,11 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
  * reordered. In addition, the field is copied to a public static field during
  * finalization to prevent a theoretical optimizer from eliminating the field.</p>
  *
- * <p>The advantage of this approach is that does not involve any form of locking.
- * It does, however, require a StoreLoad barrier after every pre-finalization
- * method call.</p>
+ <p>In order to minimize the cost of this write, <code>AtomicIntegerFieldUpdater</code>
+ * is used to perform a lazy write.</p>
+ *
+ * <p>The advantage of this approach is that does not involve any form of locking, and only uses a cheap
+ * barrier, which is free on many platforms, including x86.</p>
  */
 public final class SafeFinalizeVolatileFieldUsingUpdaterExample {
     public static int STATIC_COUNTER = 0;
@@ -19,9 +22,6 @@ public final class SafeFinalizeVolatileFieldUsingUpdaterExample {
             updater = AtomicIntegerFieldUpdater.newUpdater(SafeFinalizeVolatileFieldUsingUpdaterExample.class, "counter");
     // Initialize with current static field value for an additional optimizer safe-guard
     private volatile int counter = STATIC_COUNTER;
-
-
-
 
     public void work() throws Exception {
         try {
