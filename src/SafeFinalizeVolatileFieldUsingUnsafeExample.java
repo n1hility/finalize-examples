@@ -59,6 +59,8 @@ public final class SafeFinalizeVolatileFieldUsingUnsafeExample {
     protected void finalize() throws Throwable {
         super.finalize();
         // Copy value to a public static for an additional optimizer safe-guard
+        // Only needs to be done IF the finalizer is freeing the resource, if the user properly freed
+        // the resource it can be skipped.
         STATIC_COUNTER = counter;
         System.err.println("Finalize");
     }

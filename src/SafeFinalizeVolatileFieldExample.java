@@ -16,7 +16,6 @@ public final class SafeFinalizeVolatileFieldExample {
     // Initialize with current static field value for an additional optimizer safe-guard
     private volatile int counter = STATIC_COUNTER;
 
-
     public void work() throws Exception {
         try {
             System.err.println("Work starting");
@@ -34,6 +33,8 @@ public final class SafeFinalizeVolatileFieldExample {
         super.finalize();
 
         // Copy value to a public static for an additional optimizer safe-guard
+        // Only needs to be done IF the finalizer is freeing the resource, if the user properly freed
+        // the resource it can be skipped.
         STATIC_COUNTER = counter;
         System.err.println("Finalize");
     }
